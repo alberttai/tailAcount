@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ### Writtern by Albert K Tai, PhD
-### Research Assistant Professor, Department of Integrative Phyisology and Pathobiology
+### Research Assistant Professor, Department of Immunology
 ### Tufts University School of Medicine, Boston, MA
 
 use strict;
