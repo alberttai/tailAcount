@@ -16,7 +16,7 @@ AGACTTGCAGAAAAAGCATACTCCAGAGGAAGCTGAGGCATGCCTGCTCG
 AGAGCCAGCTGTTCCATGTGCAATTTTCCTCTGATAGTTTCTGGTCACTG
 TTGCCACGGTGATAATGACTGGGCTATGTCATTATCTATCCGCCAACAGT
 AAGAGAAGCTTTGCAGTCGAGATATTGTTTAGCAGATGGAGTGTTTTCTG
-TTGAACACTAAGTACTGCCACAAGT CTGTAGGCACCATCAATCGTTACGTAG" > ref.fa
+TTGAACACTAAGTACTGCCACAAGT""CTGTAGGCACCATCAATCGTTACGTAG" > ref.fa
 	bowtie2-build ref.fa ref
 	cd ..
 fi
@@ -32,7 +32,7 @@ LeadQualTrim=25
 MinLen=20
 TailQualTrim=$LeadQualTrim
 
-for file in $1*R1_001.fastq* ; do
+for file in $1*R1_001.fastq.gz ; do
 	filename=${file%*_R1_001.fastq*}
 	input1=$file
 	input2=${file/_R1_/_R2_}
@@ -54,11 +54,11 @@ for file in $1*R1_001.fastq* ; do
 	echo "#SBATCH -e $samplename.trim_ts.e" >> tempjob
 	echo "java -Xmx4g -jar $tucf/Tools/Trimmomatic-0.32/trimmomatic-0.32.jar PE -threads 6 -phred33 $input1 $input2 $peread1 $seread1 $peread2 $seread2 ILLUMINACLIP:/cluster/home/a/t/atai01/tucf_genomics/Tools/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10:1:true LEADING:$LeadQualTrim TRAILING:$TailQualTrim SLIDINGWINDOW:4:15 MINLEN:$MinLen" >> tempjob
 	echo "mv trim*$samplename*se*fastq ./unused_trimmomatic_out" >> tempjob
-	echo "flash -f 175 -s 10 -m 50 -M 120 -t 6 --output-prefix=$samplename $peread1 $peread2" >> tempjob
+	echo "/cluster/tufts/tucf_genomics/Tools/FLASH-1.2.11/flash -f 175 -s 10 -m 50 -M 120 -t 6 --output-prefix=$samplename $peread1 $peread2" >> tempjob
 	echo "mv *$samplename*not*.fastq *$samplename*.hist* ./unused_flash_out" >> tempjob
 	echo "mv trimts_*$samplename*_R*_001.fastq ./trimmomatic_pe_out" >> tempjob
 	echo "bowtie2 --no-unal -p 6 -x ./ref/ref -U $samplename.extendedFrags.fastq -S $samplename.sam" >> tempjob
-	echo "./dm_pipeline_v2_scaRNA13.pl $samplename.sam" >> tempjob
+	echo "./pipeline_v3_scaRNA13.pl $samplename.sam" >> tempjob
 	cat tempjob
 	sbatch tempjob
 done
