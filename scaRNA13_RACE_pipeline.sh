@@ -47,7 +47,7 @@ for file in $1*R1_001.fastq* ; do
 	echo "#SBATCH -n 1" >> tempjob
 	echo "#SBATCH -c 6" >> tempjob
 	echo "#SBATCH -p batch" >> tempjob
-	echo "#SBATCH --time=2:00:00" >> tempjob
+	echo "#SBATCH --time=12:00:00" >> tempjob
 	echo "#SBATCH --mem=6000" >> tempjob
 	echo "#SBATCH -J trim.$samplename" >> tempjob
 	echo "#SBATCH -o $samplename.trim_ts.o" >> tempjob
